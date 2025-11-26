@@ -1,0 +1,22 @@
+name: Test Block Deploy
+
+on:
+  push:
+    branches: [main]   # реагировать на пуш
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest # запуск на какой ос
+
+    steps:
+      - uses: actions/checkout@v4 # стащить актуальные последние изменения
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3   # от себя отправить
+        with:
+          path: dist
+      - uses: actions/deploy-pages@v4
