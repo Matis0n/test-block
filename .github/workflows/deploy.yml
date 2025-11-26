@@ -1,26 +1,30 @@
-name: Test Block Deploy
+name: Test Block Deploy             # Название workflow — отображается в GitHub Actions
 
-on:
-  push:
-    branches: [main]   # реагировать на пуш
+on:                                # Условия, при которых запускать workflow
+  push:                            # Событие — при push-е в репозиторий
+    branches: [main]               # Запускать только если commit был в ветку main
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+permissions:                       # Устанавливаем права для GitHub Pages
+  contents: read                   # Разрешение читать содержимое репо
+  pages: write                     # Разрешение загружать артефакты на GitHub Pages
+  id-token: write                  # Нужен для авторизации при деплое
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest # запуск на какой ос
+jobs:                              # Здесь начинается список задач
+  deploy:                          # Имя задачи (job)
+    runs-on: ubuntu-latest         # Запускаем job на виртуальной машине Ubuntu
 
-    steps:
-      - uses: actions/checkout@v4 # стащить актуальные последние изменения
-      - uses: actions/setup-node@v4
+    steps:                         # Последовательность шагов
+      - uses: actions/checkout@v4  # Скачиваем код из репозитория (обязательно!)
+
+      - uses: actions/setup-node@v4 # Устанавливаем Node.js
         with:
-          node-version: 20
-      - run: npm install
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v3   # от себя отправить
+          node-version: 20         # Выбираем версию Node.js
+
+      - run: npm install           # Устанавливаем зависимости из package.json
+      - run: npm run build         # Собираем проект (результат попадет в папку dist или build)
+
+      - uses: actions/upload-pages-artifact@v3 # Загружаем папку с билдом как артефакт
         with:
-          path: dist
-      - uses: actions/deploy-pages@v4
+          path: dist               # Путь к папке с результатом сборки (изменить при необходимости)
+
+      - uses: actions/deploy-pages@v4  # Деплой на GitHub Pages (официальный экшен)
